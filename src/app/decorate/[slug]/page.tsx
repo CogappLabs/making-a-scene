@@ -1,14 +1,17 @@
 'use client';
 import dynamic from 'next/dynamic';
 // import Canvas from '../components/canvas';
-import { Search } from '../components/search';
+import { Search } from '../../components/search';
 import { useRef, useState } from 'react';
 
-const Canvas = dynamic(() => import('../components/canvas'), {
+const Canvas = dynamic(() => import('../../components/canvas'), {
   ssr: false,
 });
 
-export default function Page() {
+export default function Page({ params }) {
+  const slug = params.slug;
+  const bgImageUrl = `/rooms/room-${slug}.png`;
+
   // Keep state at parent level.
   const [dragUrl, setDragUrl] = useState(null);
 
@@ -33,8 +36,11 @@ export default function Page() {
 
       <main className="flex min-h-full">
         {/* Main Canvas Content */}
-        <section className="ml-64 w-full bg-contain bg-center bg-no-repeat" style={{"backgroundImage": "url('https://makescene.s3.eu-west-1.amazonaws.com/room-1.png')"}}>
-          <Canvas dragUrl={dragUrl} setDragUrl={setDragUrl}/>
+        <section
+          className="ml-64 w-full bg-contain bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${bgImageUrl})` }}
+        >
+          <Canvas dragUrl={dragUrl} setDragUrl={setDragUrl} />
         </section>
       </main>
     </div>
