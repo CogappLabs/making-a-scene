@@ -2,17 +2,22 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4">
-        <Link
-          href="/search"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Search
-        </Link>
-      </div>
-    </main>
-  )
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow p-4">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-xl font-bold">Room Selection</h1>
+        </div>
+      </header>
+      <main className="p-4">
+        <div className="bg-white p-4 shadow rounded-lg">
+          {/* <img src="path_to_your_image" alt="Room Image" className="w-full h-64 object-cover mb-4 rounded-lg" /> */}
+          <div className="flex justify-between">
+            <Link className="bg-gray-200 px-4 py-2 rounded-lg" href="/decorate">
+              Decorate
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
