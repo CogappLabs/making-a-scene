@@ -33,7 +33,7 @@ export default function Page() {
 
       <main className="flex min-h-full">
         {/* Main Canvas Content */}
-        <section className="ml-64 w-full">
+        <section className="ml-64 w-full bg-contain bg-center bg-no-repeat" style={{"backgroundImage": "url('https://makescene.s3.eu-west-1.amazonaws.com/room-1.png')"}}>
           <Canvas dragUrl={dragUrl} setDragUrl={setDragUrl}/>
         </section>
       </main>

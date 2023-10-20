@@ -18,6 +18,7 @@ function Hit({ hit, handleDragStart }) {
         <p>{hit.objectID}</p>
         {/* <img src={hit.primaryImage} alt="" /> */}
         <img
+          id="{hit.objectID}"
           src={cutoutPath}
           alt=""
           className="w-20 cursor-grab"
