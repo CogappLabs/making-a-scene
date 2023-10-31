@@ -1,34 +1,57 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image, Transformer } from 'react-konva';
+import { useEffect, useRef, useState } from 'react';
+import { Stage, Layer, Image as KonvaImage, Transformer } from 'react-konva';
 import useImage from 'use-image';
 
-const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
+const URLImage = ({shapeProps, isSelected, onSelect, onChange }) => {
   const image = shapeProps;
   const [img] = useImage(image.src);
   const shapeRef = useRef();
-  const trRef = useRef();
+  const transformerRef = useRef();
 
-  React.useEffect(() => {
+  // useEffect(() => {
+  //   if (img && image) {
+  //     const canvas = document.createElement('canvas');
+  //     const ctx = canvas.getContext('2d');
+  //     const p = new Perspective(ctx, img);
+  //     console.log(p);
+  // //     // Draw the image with perspective transformation
+  //     // p.draw({
+  //     //   topLeftX: 0,
+  //     //   topLeftY: 0,
+  //     //   topRightX: 100,
+  //     //   topRightY: 0,
+  //     //   bottomRightX: 100,
+  //     //   bottomRightY: 100,
+  //     //   bottomLeftX: 0,
+  //     //   bottomLeftY: 100,
+  //     // });
+
+  // //     // Trigger a Konva update by setting the image source to the canvas data
+  //     // const dataURL = canvas.toDataURL();
+  //     // image.src = dataURL;
+  //     // shapeRef.current.getLayer().batchDraw();
+  //   }
+  // }, [image]);
+
+  useEffect(() => {
     if (isSelected) {
       // we need to attach transformer manually
-      trRef.current.nodes([shapeRef.current]);
-      trRef.current.getLayer().batchDraw();
+      transformerRef.current.nodes([shapeRef.current]);
+      transformerRef.current.getLayer().batchDraw();
     }
   }, [isSelected]);
 
   return (
     <>
-      <Image
-        onClick={onSelect}
-        onTap={onSelect}
+      <KonvaImage
         ref={shapeRef}
         {...shapeProps}
         draggable
         image={img}
         x={image.x}
         y={image.y}
-        // offsetX={img ? img.width / 2 : 0}
-        // offsetY={img ? img.height / 2 : 0}
+        onClick={onSelect}
+        onTap={onSelect}
         onDragEnd={(e) => {
           onChange({
             ...shapeProps,
@@ -40,7 +63,8 @@ const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
           // transformer is changing scale of the node
           // and NOT its width or height
           // but in the store we have only width and height
-          // to match the data better we will reset scale on transform end
+          // to match the data better we will reset scale
+          // on transform end.
           const node = shapeRef.current;
           const scaleX = node.scaleX();
           const scaleY = node.scaleY();
@@ -60,12 +84,12 @@ const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
       />
       {isSelected && (
         <Transformer
-          ref={trRef}
+          ref={transformerRef}
           boundBoxFunc={(oldBox, newBox) => {
-            // // limit resize
-            // if (newBox.width < 5 || newBox.height < 5) {
-            //   return oldBox;
-            // }
+            // limit resize
+            if (newBox.width < 5 || newBox.height < 5) {
+              return oldBox;
+            }
             return newBox;
           }}
         />
@@ -74,21 +98,48 @@ const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
   );
 };
 
-const BgImage = ({}) => {
-  const [img] = useImage('https://makescene.s3.eu-west-1.amazonaws.com/room-1.png');
-  return (
-    <Image
-      image={img}
-    />
-  );
-}
+// const warp = (img: HTMLImageElement) => {
+//   let cnv = document.createElement('canvas');
+//   let ctx = cnv.getContext('2d');
 
-const Canvas = ({ dragUrl, setDragUrl }) => {
+//   if (ctx === null) {
+//     console.log('ctx is null');
+//     return;
+//   }
+
+//   const p = new Perspective(ctx, img);
+//   const warped = p.draw({
+//     topLeftX: 30,
+//     topLeftY: 30,
+//     topRightX: 462,
+//     topRightY: 50,
+//     bottomRightX: 442,
+//     bottomRightY: 482,
+//     bottomLeftX: 10,
+//     bottomLeftY: 512,
+//   });
+
+//   console.log('warped', warped);
+// };
+
+const CANVAS_VIRTUAL_WIDTH = 1232;
+const CANVAS_VIRTUAL_HEIGHT = 928;
+
+const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgroundUrl }) => {
   const stageRef = useRef();
   const divRef = useRef();
-  const [images, setImages] = useState([]);
-  const [size, setSize] = useState({ width: 800, height: 831 });
+  const [size, setSize] = useState({
+    width: 0,
+    height: 0,
+  });
   const [selectedId, setSelectedId] = useState(null);
+
+  // const [anchors, setAnchors] = useState([
+  //   { x: 30, y: 30 },
+  //   { x: width - 50, y: 50 },
+  //   { x: width - 70, y: height - 30 },
+  //   { x: 10, y: height },
+  // ]);
 
   const checkDeselect = (e) => {
     // deselect when clicked on empty area
@@ -98,7 +149,15 @@ const Canvas = ({ dragUrl, setDragUrl }) => {
     }
   };
 
-  // Can't seem to get canvas to fit window for some reason...
+  const deleteSelectedImage = () => {
+    if (selectedId === null) {
+      return;
+    }
+    setImages(images.filter((image) => image.id !== selectedId));
+    setSelectedId(null);
+  };
+
+  // Intiially set the size of the canvas to the size of the parent div.
   useEffect(() => {
     if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
       setSize({
@@ -108,50 +167,81 @@ const Canvas = ({ dragUrl, setDragUrl }) => {
     }
   }, []);
 
+  // // Update the size of the canvas when the window is resized.
+  useEffect(() => {
+    const checkSize = () => {
+      if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+        setSize({
+          width: divRef.current.offsetWidth,
+          height: divRef.current.offsetHeight,
+        });
+      }
+    };
+
+    window.addEventListener('resize', checkSize);
+    return () => {
+      window.removeEventListener('resize', checkSize);
+    };
+  }, []);
+
+  // Event listener for keydown events
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        deleteSelectedImage();
+      }
+    };
+
+    // Attach the event listener
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedId, images]);
+
+  const scale = Math.min(
+    divRef.current?.offsetWidth / CANVAS_VIRTUAL_WIDTH,
+    divRef.current?.offsetHeight / CANVAS_VIRTUAL_HEIGHT
+  );
+
   return (
     <div
-      className="flex justify-center"
       ref={divRef}
+      className="h-full w-full bg-contain bg-center bg-no-repeat"
+      // style={{ backgroundImage: `url(${backgroundUrl})` }}
+      onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
         stageRef.current.setPointersPositions(e);
-        setImages(
-          images.concat([
-            {
-              ...stageRef.current.getPointerPosition(),
-              src: dragUrl,
-              id: dragUrl
-            },
-          ])
-        );
+        onDropHandler(dragUrl, stageRef.current.getPointerPosition());
         setDragUrl(null);
       }}
-      onDragOver={(e) => e.preventDefault()}
     >
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
+        ref={stageRef}
+        width={size.width}
+        height={size.height}
+        scaleX={scale}
+        scaleY={scale}
         onMouseDown={checkDeselect}
         onTouchStart={checkDeselect}
-        ref={stageRef}
-        style={{ width: size.width, height: size.height }}
-        className="border-black border-4"
       >
         <Layer>
-          {/* <BgImage /> */}
           {images.map((image, index) => (
             <URLImage
               key={index}
               shapeProps={image}
               isSelected={image.id === selectedId}
               onSelect={() => {
-                console.log(image);
                 setSelectedId(image.id);
               }}
               onChange={(newAttrs) => {
                 const newimages = images.slice();
                 newimages[index] = newAttrs;
                 setImages(newimages);
+                console.log('change', image);
               }}
             />
           ))}

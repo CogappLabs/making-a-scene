@@ -1,37 +1,68 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-export default function Home() {
-  const bgImages = [
-    '/rooms/room-1.png',
-    '/rooms/room-2.png',
-    '/rooms/room-3.png',
-    '/rooms/room-4.png',
-  ];
-
+export default function Page() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow p-4">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-xl font-bold">Room Selection</h1>
-        </div>
-      </header>
-      <main className="p-4">
-        <div className="bg-white p-4 shadow rounded-lg">
-          {/* <img src="path_to_your_image" alt="Room Image" className="w-full h-64 object-cover mb-4 rounded-lg" /> */}
-          <div className="flex justify-between">
-            {/* loop through bgImages and show a thumbnail card and offer a button to pick on, and link to decorate. */}
-            {/* pass the bgimage id via the link */}
-            {bgImages.map((bgImage, i) => (
-              <div className="w-1/4 p-4">
-                <img src={bgImage} alt="Room Image" className="w-full h-64 object-cover mb-4 rounded-lg" />
-                <Link className="bg-gray-200 px-4 py-2 rounded-lg" href={`/decorate/${i + 1}`}>
-                  {`Room ${i + 1}`}
-                </Link>
-              </div>
-            ))}
+    <>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="px-4 md:px-6">
+          <div className="flex flex-col items-center space-y-4 text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
+              Make a Scene
+            </h1>
+            <p className="mx-auto max-w-[700px] text-zinc-500 md:text-xl lg:text-base xl:text-xl dark:text-zinc-400">
+
+            </p>
+            <Link
+              className="inline-flex h-9 items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 shadow transition-colors hover:bg-zinc-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90 dark:focus-visible:ring-zinc-300"
+              href="/rooms"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
-      </main>
-    </div>
+      </section>
+      {/* <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="flex flex-col items-center space-y-4 p-4 bg-white rounded-lg shadow-md">
+              <Image
+                alt="Card Image"
+                className="aspect-[1/1] overflow-hidden rounded-lg object-contain object-center"
+                height="200"
+                src="/placeholder.svg"
+                width="200"
+              ></Image>
+              <h3 className="text-xl font-bold">Example 1 by NH</h3>
+              <p className="text-zinc-500 md:text-base lg:text-sm xl:text-base dark:text-zinc-400">
+              </p>
+            </div>
+            <div className="flex flex-col items-center space-y-4 p-4 bg-white rounded-lg shadow-md">
+              <Image
+                alt="Card Image"
+                className="aspect-[1/1] overflow-hidden rounded-lg object-contain object-center"
+                height="200"
+                src="/placeholder.svg"
+                width="200"
+              ></Image>
+              <h3 className="text-xl font-bold">Example 2 by AB</h3>
+              <p className="text-zinc-500 md:text-base lg:text-sm xl:text-base dark:text-zinc-400">
+              </p>
+            </div>
+            <div className="flex flex-col items-center space-y-4 p-4 bg-white rounded-lg shadow-md">
+              <Image
+                alt="Card Image"
+                className="aspect-[1/1] overflow-hidden rounded-lg object-contain object-center"
+                height="200"
+                src="/placeholder.svg"
+                width="200"
+              ></Image>
+              <h3 className="text-xl font-bold">Example 3 by GR</h3>
+              <p className="text-zinc-500 md:text-base lg:text-sm xl:text-base dark:text-zinc-400">
+              </p>
+            </div>
+          </div>
+        </div>
+      </section> */}
+    </>
   );
 }
