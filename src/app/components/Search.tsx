@@ -1,14 +1,13 @@
 'use client';
 
-import { ArrowDownCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import algoliasearch from 'algoliasearch/lite';
-import { useState } from 'react';
 import { Configure, InfiniteHits, useSearchBox } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 
 const searchClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
-  process.env.NEXT_PUBLIC_ALGOLIA_API_KEY
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? '',
+  process.env.NEXT_PUBLIC_ALGOLIA_API_KEY ?? ''
 );
 
 function Hit({ hit, onImageDragStart, onInfoButtonClick, onAddButtonClick }) {
@@ -39,7 +38,6 @@ function Hit({ hit, onImageDragStart, onInfoButtonClick, onAddButtonClick }) {
               className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-black hover:text-white"
               onClick={() => onInfoButtonClick(hit)}
             >
-              {/* <PencilIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" /> */}
               <span>More Info</span>
             </button>
           </span>
