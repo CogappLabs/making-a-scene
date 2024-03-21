@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Image as KonvaImage, Transformer } from 'react-konva';
 import useImage from 'use-image';
 
-const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
+const URLImage = ({ shapeProps, isSelected, onSelect, onChange, interactable }) => {
   const image = shapeProps;
   const [img] = useImage(image.src);
   const shapeRef = useRef();
   const transformerRef = useRef();
 
   useEffect(() => {
-    if (isSelected) {
+    if (isSelected && interactable) {
       transformerRef.current.nodes([shapeRef.current]);
       transformerRef.current.getLayer().batchDraw();
     }
@@ -21,7 +21,7 @@ const URLImage = ({ shapeProps, isSelected, onSelect, onChange }) => {
       <KonvaImage
         ref={shapeRef}
         {...shapeProps}
-        draggable
+        draggable={interactable}
         image={img}
         x={image.x}
         y={image.y}
@@ -167,6 +167,7 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
           {images.map((image, index) => (
             <URLImage
               key={index}
+              interactable={index > 0}
               shapeProps={image}
               isSelected={image.id === selectedId}
               onSelect={() => {
