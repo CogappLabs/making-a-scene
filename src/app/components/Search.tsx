@@ -10,9 +10,11 @@ const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_API_KEY ?? ''
 );
 
+const imageRoot = process.env.NEXT_PUBLIC_IMAGE_SRC || 'cutouts';
+
 function Hit({ hit, onImageDragStart, onInfoButtonClick, onAddButtonClick }) {
   const { objectID, title, classification, attribution } = hit;
-  let cutoutPath = `/cutouts/resized/trimmed/${objectID}.png`;
+  let cutoutPath = `${imageRoot}/${objectID}.png`;
 
   return (
     <div className="flex gap-x-4 my-4 p-4 w-full rounded-sm border-vibrancy-blue border shadow">
