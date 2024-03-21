@@ -1,22 +1,24 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Search } from '@/app/components/Search';
-import { useState } from 'react';
-import Modal from '@/app/components/Modal';
-import SlidingPanel from '@/app/components/SlidingPanel';
+import { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { CameraIcon, PencilIcon } from '@heroicons/react/20/solid';
 import Header from '@/app/components/Header';
-import { v4 as uuidv4 } from 'uuid';
-import { backgroundImages } from '@/app/components/backgrounds';
+import Modal from '@/app/components/Modal';
+import { Search } from '@/app/components/Search';
+import SlidingPanel from '@/app/components/SlidingPanel';
+import useImage from 'use-image';
 
-const Canvas = dynamic(() => import('@/app/components/Canvas'), {
+const Canvas = dynamic(() => import('@/app/components/WrappedCanvas'), {
   ssr: false,
 });
 
-export default function Page({ params}) {
+export default function Page({ params }) {
   const slug = params.slug;
   const bgImageUrl = `/rooms/room-${slug}.png`;
+
+  const stageRef = useRef(null);
 
   // Modal component is activated by button press
   // in the search component so that state is
@@ -31,22 +33,27 @@ export default function Page({ params}) {
   const [selectedObject, setSelectedObject] = useState(null);
 
   // State for objects on the canvas.
-  const [images, setImages] = useState([
-    {
-      src: bgImageUrl,
-      id: uuidv4(),
-      x: 0,
-      y: 0,
-    }
-  ]);
+  const [images, setImages] = useState<{
+    src: string;
+    id: string;
+    x: number;
+    y: number;
+  }[]>([]);
 
-  const setImagesHandler = (src, postition = { x: 100, y: 100 }) => {
-    const newImage = {
+  const backgroundImage = {
+    src: bgImageUrl,
+    id: uuidv4(),
+    x: 0,
+    y: 0,
+  };
+
+  const setImagesHandler = (src: string, position = { x: 100, y: 100 }) => {
+    const image = {
       src,
       id: uuidv4(),
-      ...postition,
+      ...position,
     };
-    setImages(images.concat([newImage]));
+    setImages(images.concat([image]));
   };
 
   const onModalOpenHandler = (data) => {
@@ -73,6 +80,7 @@ export default function Page({ params}) {
             <button
               type="button"
               className="inline-flex items-center rounded-md bg-imagination-magenta px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:text-black"
+              onClick={() => stageRef?.current?.downloadImage()}
             >
               <CameraIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
               Save
@@ -87,12 +95,13 @@ export default function Page({ params}) {
 
       <main className="pb-8 grow">
         <Canvas
-          backgroundUrl={bgImageUrl}
+          stageRef={stageRef}
           dragUrl={dragUrl}
           setDragUrl={setDragUrl}
           images={images}
           setImages={setImages}
           onDropHandler={setImagesHandler}
+          backgroundLayerImage={backgroundImage}
         />
       </main>
 

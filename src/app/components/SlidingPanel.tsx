@@ -34,7 +34,7 @@ export default function SlidingPanel({ isOpen, setIsOpen, children }) {
                   <div className="flex h-full flex-col overflow-y-scroll shadow-xl bg-white">
                     <div className="flex justify-between p-8">
                       <Dialog.Title>
-                        <h2 className="font-bold text-xl">Search for an object</h2>
+                        <span className="font-bold text-xl">Search for an object</span>
                       </Dialog.Title>
                       <Transition.Child
                         as={Fragment}
