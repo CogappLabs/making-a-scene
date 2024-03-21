@@ -1,8 +1,3 @@
-import {
-  CameraIcon,
-  PencilIcon,
-} from '@heroicons/react/20/solid';
-
 export default function Header({ children }) {
   return (
     <div className="flex items-center justify-between py-8">
