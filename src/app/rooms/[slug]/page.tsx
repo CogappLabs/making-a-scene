@@ -31,7 +31,7 @@ ForwardRefCanvas.displayName = 'ForwardRefCanvas';
 
 export default function Page({ params }) {
   const slug = params.slug;
-  const bgImageUrl = `/rooms/room-${slug}.png`;
+  const bgImageUrl = `/images/room-${slug}.jpeg`;
 
   const stageRef = useRef<StageType>(null);
 

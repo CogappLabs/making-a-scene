@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 
 export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertObjectHandler }) {
   const { title, classification, attribution, objectID } = selectedObjectData ?? {};
-  const imageSrc = `/cutouts/resized/trimmed/${objectID}.png`;
+  const imageSrc = `/scene-assets/${objectID}.png`;
 
   function closeModal() {
     setIsOpen(false);

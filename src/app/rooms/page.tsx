@@ -2,8 +2,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { backgroundImages } from '../components/backgrounds';
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
+
+const backgroundImages = [
+  'room-1',
+  'room-2',
+  'room-3',
+  'room-4',
+];
 
 export default function Page() {
   return (
@@ -17,7 +23,7 @@ export default function Page() {
               className="flex flex-col items-center text-white rounded-md bg-blue pt-4 px-4 text-sm font-semibold shadow-sm hover:bg-green hover:text-black"
             >
               <Image
-                src={bgImage}
+                src={`/images/${bgImage}.jpeg`}
                 alt="Room Image"
                 className="group-hover:opacity-75"
                 width={800}
