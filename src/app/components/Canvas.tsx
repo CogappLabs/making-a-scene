@@ -34,8 +34,8 @@ const Canvas = (
   useEffect(() => {
     if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
       setSize({
-        width: divRef.current.offsetWidth,
-        height: divRef.current.offsetHeight,
+        width: Math.min(divRef.current.offsetWidth, CANVAS_VIRTUAL_WIDTH),
+        height: Math.min(divRef.current.offsetHeight, CANVAS_VIRTUAL_HEIGHT),
       });
     }
   }, []);
@@ -45,8 +45,8 @@ const Canvas = (
     const checkSize = () => {
       if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
         setSize({
-          width: divRef.current.offsetWidth,
-          height: divRef.current.offsetHeight,
+          width: Math.min(divRef.current.offsetWidth, CANVAS_VIRTUAL_WIDTH),
+          height: Math.min(divRef.current.offsetHeight, CANVAS_VIRTUAL_HEIGHT),
         });
       }
     };
@@ -82,15 +82,10 @@ const Canvas = (
     };
   }, [selectedId, images, setImages]);
 
-  const scale = Math.min(
-    divRef.current?.offsetWidth ? divRef.current?.offsetWidth / CANVAS_VIRTUAL_WIDTH : CANVAS_VIRTUAL_WIDTH,
-    divRef.current?.offsetHeight ? divRef.current?.offsetWidth / CANVAS_VIRTUAL_HEIGHT : CANVAS_VIRTUAL_HEIGHT,
-  );
-
   return (
     <div
       ref={divRef}
-      className="h-full w-full bg-contain bg-center bg-no-repeat"
+      className="h-full w-full"
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
@@ -100,11 +95,10 @@ const Canvas = (
       }}
     >
       <Stage
+        className="flex justify-center"
         ref={forwardedRef}
         width={size.width}
         height={size.height}
-        scaleX={scale}
-        scaleY={scale}
         onMouseDown={checkDeselect}
         onTouchStart={checkDeselect}
       >
