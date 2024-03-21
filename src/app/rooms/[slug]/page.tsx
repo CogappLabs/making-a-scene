@@ -2,21 +2,37 @@
 
 import dynamic from 'next/dynamic';
 import { Search } from '@/app/components/Search';
-import { useState } from 'react';
+import { FC, ForwardedRef, forwardRef, useRef, useState } from 'react';
 import Modal from '@/app/components/Modal';
 import SlidingPanel from '@/app/components/SlidingPanel';
 import { CameraIcon, PencilIcon } from '@heroicons/react/20/solid';
 import Header from '@/app/components/Header';
 import { v4 as uuidv4 } from 'uuid';
-import { backgroundImages } from '@/app/components/backgrounds';
+import React from 'react';
 
 const Canvas = dynamic(() => import('@/app/components/Canvas'), {
   ssr: false,
 });
 
-export default function Page({ params}) {
+interface CanvasProps {
+  dragUrl: string | null;
+  images: { src: string; id: any; x: number; y: number; }[]
+  onDropHandler: Function;
+  setDragUrl: Function;
+  setImages: Function;
+  ref: ForwardedRef<any>;
+}
+
+const ForwardRefCanvas: FC<CanvasProps> = forwardRef(function ForwardRefCanvas(props, ref) {
+  return <Canvas {...props} forwardedRef={ref} />;
+});
+ForwardRefCanvas.displayName = 'ForwardRefCanvas';
+
+export default function Page({ params }) {
   const slug = params.slug;
   const bgImageUrl = `/rooms/room-${slug}.png`;
+
+  const stageRef = useRef(null);
 
   // Modal component is activated by button press
   // in the search component so that state is
@@ -40,11 +56,11 @@ export default function Page({ params}) {
     }
   ]);
 
-  const setImagesHandler = (src, postition = { x: 100, y: 100 }) => {
+  const setImagesHandler = (src, position = { x: 100, y: 100 }) => {
     const newImage = {
       src,
       id: uuidv4(),
-      ...postition,
+      ...position,
     };
     setImages(images.concat([newImage]));
   };
@@ -54,45 +70,60 @@ export default function Page({ params}) {
     setIsModalOpen(true);
   };
 
+  const handleSave = () => {
+    if (stageRef.current) {
+      const activeStage = stageRef.current.getStage();
+      if (!activeStage) {
+        console.error('Error generating image download.');
+        return;
+      }
+
+      const dataURL = activeStage.toDataURL({
+        pixelRatio: 1,
+        mimeType: 'image/jpeg',
+      });
+
+      var link = document.createElement('a');
+      link.download = 'filename.jpeg';
+      link.href = dataURL;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <>
       <Header>
         <div className="flex gap-4">
-          <span className="">
-            <button
-              type="button"
-              className="inline-flex items-center rounded-md bg-generosity-green px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-200"
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <PencilIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-              Edit
-            </button>
-          </span>
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-black shadow-sm ring-inset ring-gray-300 hover:bg-black hover:text-green"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <PencilIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+            Add objects
+          </button>
 
-          <span className="">
-            <button
-              type="button"
-              className="inline-flex items-center rounded-md bg-imagination-magenta px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:text-black"
-            >
-              <CameraIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-              Save
-            </button>
-          </span>
-
-          {/* <span className="">
-          <DarkModeButton />
-        </span> */}
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-black shadow-sm ring-inset ring-gray-300 hover:bg-black hover:text-green"
+            onClick={() => handleSave()}
+          >
+            <CameraIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+            Save
+          </button>
         </div>
       </Header>
 
       <main className="pb-8 grow">
-        <Canvas
-          backgroundUrl={bgImageUrl}
+        <ForwardRefCanvas
           dragUrl={dragUrl}
-          setDragUrl={setDragUrl}
           images={images}
-          setImages={setImages}
           onDropHandler={setImagesHandler}
+          setDragUrl={setDragUrl}
+          setImages={setImages}
+          ref={stageRef}
         />
       </main>
 

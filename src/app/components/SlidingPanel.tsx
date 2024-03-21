@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export default function SlidingPanel({ isOpen, setIsOpen, children }) {
   return (
@@ -32,9 +31,9 @@ export default function SlidingPanel({ isOpen, setIsOpen, children }) {
               >
                 <Dialog.Panel className="pointer-events-auto relative w-screen max-w-xl">
                   <div className="flex h-full flex-col overflow-y-scroll shadow-xl bg-white">
-                    <div className="flex justify-between p-8">
+                    <div className="flex justify-between items-center p-8">
                       <Dialog.Title>
-                        <h2 className="font-bold text-xl">Search for an object</h2>
+                        <span className="font-bold text-xl">Search for an object</span>
                       </Dialog.Title>
                       <Transition.Child
                         as={Fragment}
@@ -47,11 +46,10 @@ export default function SlidingPanel({ isOpen, setIsOpen, children }) {
                       >
                         <span className="sm:ml-3">
                           <button
-                            className="inline-flex items-center rounded-md bg-imagination-magenta px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-vibrancy-blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-black hover:text-white"
                             onClick={() => setIsOpen(false)}
                           >
-                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                            <span className="sr-only">Hide</span>
+                            <span className="text-sm">Hide</span>
                           </button>
                         </span>
                       </Transition.Child>

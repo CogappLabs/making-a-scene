@@ -63,7 +63,7 @@ export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertO
                     <span className="">
                       <button
                         type="button"
-                        className="inline-flex items-center rounded-md bg-generosity-green px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vibrancy-blue"
+                        className="inline-flex items-center rounded-md bg-green px-3 py-2 text-sm font-semibold text-black shadow-sm ring-inset ring-gray-300 hover:bg-black hover:text-green"
                         onClick={() => {
                           onInsertObjectHandler(imageSrc);
                           closeModal();
@@ -77,7 +77,7 @@ export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertO
                     <span className="">
                       <button
                         type="button"
-                        className="inline-flex items-center rounded-md bg-generosity-green px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-vibrancy-blue"
+                        className="inline-flex items-center rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-black hover:text-white"
                         onClick={closeModal}
                       >
                         Cancel

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { backgroundImages } from '../components/backgrounds';
@@ -15,7 +14,7 @@ export default function Page() {
           <div className="group" key={i}>
             <Link
               href={`/rooms/${i + 1}`}
-              className="flex flex-col items-center text-white rounded-md bg-vibrancy-blue pt-4 px-4 text-sm font-semibold shadow-sm hover:bg-generosity-green hover:text-black"
+              className="flex flex-col items-center text-white rounded-md bg-blue pt-4 px-4 text-sm font-semibold shadow-sm hover:bg-green hover:text-black"
             >
               <Image
                 src={bgImage}

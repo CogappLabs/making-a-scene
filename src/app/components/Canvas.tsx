@@ -1,77 +1,22 @@
-// @ts-nocheck
 import { useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Transformer } from 'react-konva';
-import useImage from 'use-image';
-
-const URLImage = ({ shapeProps, isSelected, onSelect, onChange, interactable }) => {
-  const image = shapeProps;
-  const [img] = useImage(image.src);
-  const shapeRef = useRef();
-  const transformerRef = useRef();
-
-  useEffect(() => {
-    if (isSelected && interactable) {
-      transformerRef.current.nodes([shapeRef.current]);
-      transformerRef.current.getLayer().batchDraw();
-    }
-  }, [isSelected]);
-
-  return (
-    <>
-      <KonvaImage
-        ref={shapeRef}
-        {...shapeProps}
-        draggable={interactable}
-        image={img}
-        x={image.x}
-        y={image.y}
-        onClick={onSelect}
-        onTap={onSelect}
-        onDragEnd={(e) => {
-          onChange({
-            ...shapeProps,
-            x: e.target.x(),
-            y: e.target.y(),
-          });
-        }}
-        onTransformEnd={(e) => {
-          const node = shapeRef.current;
-          const scaleX = node.scaleX();
-          const scaleY = node.scaleY();
-          node.scaleX(1);
-          node.scaleY(1);
-          onChange({
-            ...shapeProps,
-            x: node.x(),
-            y: node.y(),
-            // set minimal value
-            width: Math.max(5, node.width() * scaleX),
-            height: Math.max(node.height() * scaleY),
-          });
-        }}
-      />
-      {isSelected && (
-        <Transformer
-          ref={transformerRef}
-          boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
-            if (newBox.width < 5 || newBox.height < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
-      )}
-    </>
-  );
-};
+import { Stage, Layer } from 'react-konva';
+import UrlImage from './UrlImage';
 
 const CANVAS_VIRTUAL_WIDTH = 1232;
 const CANVAS_VIRTUAL_HEIGHT = 928;
 
-const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgroundUrl }) => {
-  const stageRef = useRef();
-  const divRef = useRef();
+const Canvas = (
+    {
+      dragUrl,
+      setDragUrl,
+      images,
+      setImages,
+      onDropHandler,
+      forwardedRef
+    },
+  ) => {
+
+  const divRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({
     width: 0,
     height: 0,
@@ -83,14 +28,6 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
     if (clickedOnEmpty) {
       setSelectedId(null);
     }
-  };
-
-  const deleteSelectedImage = () => {
-    if (selectedId === null) {
-      return;
-    }
-    setImages(images.filter((image) => image.id !== selectedId));
-    setSelectedId(null);
   };
 
   // Intiially set the size of the canvas to the size of the parent div.
@@ -122,6 +59,14 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
 
   // Event listener for keydown events
   useEffect(() => {
+    const deleteSelectedImage = () => {
+      if (selectedId === null) {
+        return;
+      }
+      setImages(images.filter((image) => image.id !== selectedId));
+      setSelectedId(null);
+    };
+
     const handleKeyDown = (e) => {
       if (e.key === 'Backspace' || e.key === 'Delete') {
         deleteSelectedImage();
@@ -135,11 +80,11 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedId, images]);
+  }, [selectedId, images, setImages]);
 
   const scale = Math.min(
-    divRef.current?.offsetWidth / CANVAS_VIRTUAL_WIDTH,
-    divRef.current?.offsetHeight / CANVAS_VIRTUAL_HEIGHT
+    divRef.current?.offsetWidth ? divRef.current?.offsetWidth / CANVAS_VIRTUAL_WIDTH : CANVAS_VIRTUAL_WIDTH,
+    divRef.current?.offsetHeight ? divRef.current?.offsetWidth / CANVAS_VIRTUAL_HEIGHT : CANVAS_VIRTUAL_HEIGHT,
   );
 
   return (
@@ -149,13 +94,13 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
-        stageRef.current.setPointersPositions(e);
-        onDropHandler(dragUrl, stageRef.current.getPointerPosition());
+        forwardedRef.current.setPointersPositions(e);
+        onDropHandler(dragUrl, forwardedRef.current.getPointerPosition());
         setDragUrl(null);
       }}
     >
       <Stage
-        ref={stageRef}
+        ref={forwardedRef}
         width={size.width}
         height={size.height}
         scaleX={scale}
@@ -165,7 +110,7 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
       >
         <Layer>
           {images.map((image, index) => (
-            <URLImage
+            <UrlImage
               key={index}
               interactable={index > 0}
               shapeProps={image}
@@ -177,7 +122,6 @@ const Canvas = ({ dragUrl, setDragUrl, images, setImages, onDropHandler, backgro
                 const newimages = images.slice();
                 newimages[index] = newAttrs;
                 setImages(newimages);
-                console.log('change', image);
               }}
             />
           ))}
