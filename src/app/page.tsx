@@ -36,7 +36,7 @@ export default function Page() {
                   <li className="flex gap-x-3">
                     <ExclamationTriangleIcon className="mt-1 h-5 w-5 flex-none text-blue-600" aria-hidden="true" />
                     <span>
-                      <strong className="block font-semibold text-gray-900">Disclaimer...</strong>Please note that "Make a Scene" is a prototype thrown together in a few hours as part of a Cogapp Hackday, so it probably contains a few rough edges and bugs!
+                      <strong className="block font-semibold text-gray-900">Disclaimer...</strong>Please note that &quot;Make a Scene&quot; is a prototype thrown together in a few hours as part of a Cogapp Hackday, so it probably contains a few rough edges and bugs!
                     </span>
                   </li>
                 </ul>
