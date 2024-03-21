@@ -6,7 +6,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Template',
+  title: 'Making a Scene - A cogapp hackday game',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

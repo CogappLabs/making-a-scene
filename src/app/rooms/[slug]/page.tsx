@@ -9,6 +9,7 @@ import { CameraIcon, PencilIcon } from '@heroicons/react/20/solid';
 import Header from '@/app/components/Header';
 import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
+import { Stage as StageType } from 'konva/lib/Stage';
 
 const Canvas = dynamic(() => import('@/app/components/Canvas'), {
   ssr: false,
@@ -32,7 +33,7 @@ export default function Page({ params }) {
   const slug = params.slug;
   const bgImageUrl = `/rooms/room-${slug}.png`;
 
-  const stageRef = useRef(null);
+  const stageRef = useRef<StageType>(null);
 
   // Modal component is activated by button press
   // in the search component so that state is
