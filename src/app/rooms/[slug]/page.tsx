@@ -82,11 +82,11 @@ export default function Page({ params }) {
 
       const dataURL = activeStage.toDataURL({
         pixelRatio: 1,
-        mimeType: 'image/jpeg',
+        mimeType: 'image/png',
       });
 
       var link = document.createElement('a');
-      link.download = 'filename.jpeg';
+      link.download = 'make-a-scene.png';
       link.href = dataURL;
       document.body.appendChild(link);
       link.click();
@@ -118,7 +118,7 @@ export default function Page({ params }) {
         </div>
       </Header>
 
-      <main className="pb-8 grow">
+      <main className="pb-8">
         <ForwardRefCanvas
           dragUrl={dragUrl}
           images={images}
