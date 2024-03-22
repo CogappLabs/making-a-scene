@@ -45,11 +45,17 @@ export default function UrlImage({ shapeProps, showControls, onSelect, onChange,
         image={img}
         onMouseEnter={(e) => {
           if (interactable) {
-            e.target.getStage().container().style.cursor = 'move';
+            const stage = e.target.getStage();
+            if (stage) {
+              stage.container().style.cursor = 'move';
+            }
           }
         }}
         onMouseLeave={(e) => {
-          e.target.getStage().container().style.cursor = 'default';
+          const stage = e.target.getStage();
+          if (stage) {
+            stage.container().style.cursor = 'default';
+          }
         }}
         x={image.x}
         y={image.y}
