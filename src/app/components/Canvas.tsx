@@ -1,33 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import UrlImage from './UrlImage';
-import Konva from 'konva';
-import node from 'postcss/lib/node';
-import { HSL } from 'konva/lib/filters/HSL';
-import { RGBA } from 'konva/lib/filters/RGBA';
 
 const CANVAS_VIRTUAL_WIDTH = 1232;
-const CANVAS_VIRTUAL_HEIGHT = 928;
+const CANVAS_VIRTUAL_HEIGHT = 828;
 
 const Canvas = (
-    {
-      dragUrl,
-      setDragUrl,
-      images,
-      setImages,
-      onDropHandler,
-      forwardedRef
-    },
-  ) => {
+  {
+    images,
+    setImages,
+    forwardedRef
+  },
+) => {
 
   const divRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
   const [size, setSize] = useState({
     width: CANVAS_VIRTUAL_WIDTH,
     height: CANVAS_VIRTUAL_HEIGHT,
   });
-  const [selectedId, setSelectedId] = useState(null);
-  const [scale, setScale] = useState(1);
 
+
+  const [selectedId, setSelectedId] = useState(null);
   const checkDeselect = (e) => {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
@@ -43,23 +37,36 @@ const Canvas = (
         height: Math.min(divRef.current.offsetHeight, CANVAS_VIRTUAL_HEIGHT),
       });
     }
+    setScale(Math.min(
+      window.innerWidth / CANVAS_VIRTUAL_WIDTH,
+      window.innerHeight / CANVAS_VIRTUAL_HEIGHT
+    ));
   }, []);
 
   // Update the size of the canvas when the window is resized.
-  useEffect(() => {
-    const checkSize = () => {
-      if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
-        setSize({
-          width: Math.min(divRef.current.offsetWidth, CANVAS_VIRTUAL_WIDTH),
-          height: Math.min(divRef.current.offsetHeight, CANVAS_VIRTUAL_HEIGHT),
-        });
-      }
-    };
+  // height of canvas should always use virtual aspect ratio.
+  const checkSize = () => {
+    if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+      setSize({
+        width: Math.min(divRef.current.offsetWidth, CANVAS_VIRTUAL_WIDTH),
+        height: Math.min(divRef.current.offsetHeight, CANVAS_VIRTUAL_HEIGHT),
+      });
+      setScale(Math.min(
+        divRef.current.offsetWidth / CANVAS_VIRTUAL_WIDTH,
+        divRef.current.offsetHeight / CANVAS_VIRTUAL_HEIGHT
+      ));
+    }
+  };
 
+  useEffect(() => {
     window.addEventListener('resize', checkSize);
     return () => {
       window.removeEventListener('resize', checkSize);
     };
+  }, []);
+
+  useEffect(() => {
+    checkSize();
   }, []);
 
   // Event listener for keydown events
@@ -100,14 +107,7 @@ const Canvas = (
   return (
     <div
       ref={divRef}
-      className="h-full w-full"
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault();
-        forwardedRef.current.setPointersPositions(e);
-        onDropHandler(dragUrl, forwardedRef.current.getPointerPosition());
-        setDragUrl(null);
-      }}
+      className="w-full h-full"
     >
       <Stage
         className="flex justify-center"
