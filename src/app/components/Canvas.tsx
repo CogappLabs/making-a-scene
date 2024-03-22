@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import UrlImage from './UrlImage';
+import Konva from 'konva';
+import node from 'postcss/lib/node';
+import { HSL } from 'konva/lib/filters/HSL';
+import { RGBA } from 'konva/lib/filters/RGBA';
 
 const CANVAS_VIRTUAL_WIDTH = 1232;
 const CANVAS_VIRTUAL_HEIGHT = 928;
@@ -18,10 +22,11 @@ const Canvas = (
 
   const divRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({
-    width: 0,
-    height: 0,
+    width: CANVAS_VIRTUAL_WIDTH,
+    height: CANVAS_VIRTUAL_HEIGHT,
   });
   const [selectedId, setSelectedId] = useState(null);
+  const [scale, setScale] = useState(1);
 
   const checkDeselect = (e) => {
     const clickedOnEmpty = e.target === e.target.getStage();
@@ -82,6 +87,16 @@ const Canvas = (
     };
   }, [selectedId, images, setImages]);
 
+  const toggleControls = (visible) => {
+    const newImages = images.map((image) => {
+      return {
+        ...image,
+        showControls: visible,
+      }
+    })
+    setImages(newImages);
+  };
+
   return (
     <div
       ref={divRef}
@@ -99,8 +114,12 @@ const Canvas = (
         ref={forwardedRef}
         width={size.width}
         height={size.height}
+        scaleX={scale}
+        scaleY={scale}
         onMouseDown={checkDeselect}
         onTouchStart={checkDeselect}
+        onMouseEnter={() => toggleControls(true)}
+        onMouseLeave={() => toggleControls(false)}
       >
         <Layer>
           {images.map((image, index) => (
@@ -108,7 +127,7 @@ const Canvas = (
               key={index}
               interactable={index > 0}
               shapeProps={image}
-              isSelected={image.id === selectedId}
+              showControls={image.showControls}
               onSelect={() => {
                 setSelectedId(image.id);
               }}

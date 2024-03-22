@@ -5,18 +5,19 @@ import { Image as ImageType } from 'konva/lib/shapes/Image';
 
 import useImage from 'use-image';
 
-export default function UrlImage({ shapeProps, isSelected, onSelect, onChange, interactable }) {
+export default function UrlImage({ shapeProps, showControls, onSelect, onChange, interactable }) {
   const image = shapeProps;
   const [img] = useImage(image.src);
   const shapeRef = useRef<ImageType>(null);
   const transformerRef = useRef<TransformerType>(null);
 
   useEffect(() => {
+    console.log(showControls)
     if (!transformerRef.current) {
       return;
     }
 
-    if (isSelected && interactable) {
+    if (showControls && interactable) {
       if (shapeRef.current) {
         transformerRef.current.nodes([shapeRef.current]);
         const layer = transformerRef.current.getLayer();
@@ -25,7 +26,15 @@ export default function UrlImage({ shapeProps, isSelected, onSelect, onChange, i
         }
       }
     }
-  }, [interactable, isSelected]);
+  }, [interactable, showControls]);
+
+  // not pretty but it works.
+  useEffect(() => {
+    if (!transformerRef.current) {
+      return;
+    }
+    transformerRef.current.forceUpdate();
+  })
 
   return (
     <>
@@ -34,10 +43,19 @@ export default function UrlImage({ shapeProps, isSelected, onSelect, onChange, i
         {...shapeProps}
         draggable={interactable}
         image={img}
+        onMouseEnter={(e) => {
+          if (interactable) {
+            e.target.getStage().container().style.cursor = 'move';
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.target.getStage().container().style.cursor = 'default';
+        }}
         x={image.x}
         y={image.y}
         onClick={onSelect}
         onTap={onSelect}
+        onDragMove={onSelect}
         onDragEnd={(e) => {
           onChange({
             ...shapeProps,
@@ -63,7 +81,7 @@ export default function UrlImage({ shapeProps, isSelected, onSelect, onChange, i
           });
         }}
       />
-      {isSelected && (
+      {showControls && (
         <Transformer
           ref={transformerRef}
           boundBoxFunc={(oldBox, newBox) => {

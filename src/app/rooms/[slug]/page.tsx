@@ -62,6 +62,7 @@ export default function Page({ params }) {
       src,
       id: uuidv4(),
       ...position,
+      showControls: true,
     };
     setImages(images.concat([newImage]));
   };
