@@ -13,8 +13,14 @@ const backgroundImages = [
 
 export default function Page() {
   return (
-    <div className="">
-      <p className="text-xl py-8">Choose a room to decorate</p>
+    <>
+      <div className="flex items-center justify-between py-8">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl font-bold leading-7 text-black sm:truncate sm:text-3xl sm:tracking-tight">
+            Choose a room to decorate
+          </h1>
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 gap-x-6">
         {backgroundImages.map((bgImage, i) => (
           <div className="group" key={i}>
@@ -31,12 +37,12 @@ export default function Page() {
               />
               <span className="inline-flex items-center p-4">
                 <PaperAirplaneIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-                {`Choose Room ${i + 1}`}
+                <span className="sr-only">{`Decorate room ${i + 1}`}</span>
               </span>
             </Link>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
