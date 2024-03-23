@@ -5,11 +5,12 @@ import { Search } from '@/app/components/Search';
 import { FC, ForwardedRef, forwardRef, useRef, useState } from 'react';
 import Modal from '@/app/components/Modal';
 import SlidingPanel from '@/app/components/SlidingPanel';
-import { CameraIcon, PencilIcon } from '@heroicons/react/20/solid';
+import { CameraIcon, PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import Header from '@/app/components/Header';
 import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
 import { Stage as StageType } from 'konva/lib/Stage';
+import Link from 'next/link';
 
 const Canvas = dynamic(() => import('@/app/components/Canvas'), {
   ssr: false,
@@ -94,9 +95,13 @@ export default function Page({ params }) {
     }
   };
 
+  const clearCanvas =() => {
+    setImages([]);
+  }
+
   return (
     <>
-      <Header>
+      <div className="flex gap-4 py-4 w-full justify-between">
         <div className="flex gap-4">
           <button
             type="button"
@@ -116,7 +121,17 @@ export default function Page({ params }) {
             Save
           </button>
         </div>
-      </Header>
+        <div>
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md bg-red px-3 py-2 text-sm font-semibold text-white shadow-sm ring-inset ring-gray-300 hover:bg-black hover:text-green"
+            onClick={() => clearCanvas()}
+          >
+            <TrashIcon className="mr-1.5 h-5 w-5" aria-hidden="true" />
+            <Link href="/rooms">Start over</Link>
+          </button>
+        </div>
+      </div>
 
       <main className="pb-8">
         <ForwardRefCanvas

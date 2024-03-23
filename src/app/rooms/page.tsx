@@ -16,9 +16,9 @@ export default function Page() {
     <>
       <div className="flex items-center justify-between py-8">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold leading-7 text-black sm:truncate sm:text-3xl sm:tracking-tight">
+          <h2 className="text-2xl font-bold leading-7 text-black sm:truncate sm:text-3xl sm:tracking-tight">
             Choose a room to decorate
-          </h1>
+          </h2>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 gap-x-6">
@@ -26,7 +26,7 @@ export default function Page() {
           <div className="group" key={i}>
             <Link
               href={`/rooms/${i + 1}`}
-              className="flex flex-col items-center text-white rounded-md bg-blue pt-4 px-4 text-sm font-semibold shadow-sm hover:bg-green hover:text-black"
+              className="flex flex-col items-center text-white rounded-md bg-green pt-4 px-4 text-sm font-semibold shadow-sm hover:bg-blue hover:text-black"
             >
               <Image
                 src={`/images/${bgImage}.jpeg`}

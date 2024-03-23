@@ -6,13 +6,13 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Making a Scene - A cogapp hackday game',
+  title: 'Make a Scene - A cogapp hackday game',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`h-screen ${inter.className}`}>
+      <body className={`bg-slate-200 h-screen ${inter.className}`}>
           {children}
         <Analytics />
       </body>

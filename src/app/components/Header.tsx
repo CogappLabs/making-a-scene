@@ -1,12 +1,23 @@
-export default function Header({ children }) {
+import Link from "next/link";
+
+export default function Header({ showTitle }) {
   return (
-    <div className="flex items-center justify-between py-8">
-      <div className="min-w-0 flex-1">
-        <h1 className="text-2xl font-bold leading-7 text-black sm:truncate sm:text-3xl sm:tracking-tight">
-          Decorate your room
-        </h1>
-      </div>
-      {children}
-    </div>
+    <header className="bg-blue flex flex-row items-center justify-between p-4">
+      {showTitle && (
+        <Link href="/">
+          <h1 className="text-lg text-white font-bold md:text-xl lg:text-2xl">
+            Make a Scene
+          </h1>
+        </Link>
+      )}
+      <a
+        className="decoration underline underline-offset-2 text-white"
+        href="https://medium.com/p/e5560728dc02"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        read the blog post
+      </a>
+    </header>
   );
 }
