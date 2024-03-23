@@ -13,7 +13,7 @@ export default function Page() {
   return (
     <>
       <Header showTitle={false}/>
-      <section className="w-full py-8 md:p-12 lg:p-16">
+      <section className="w-full p-8 md:p-12 lg:p-16">
         <div className="grid text-base leading-7 text-gray-700 gap-8 xl:max-w-4xl xl:mx-auto">
           <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl">
             Make a Scene
