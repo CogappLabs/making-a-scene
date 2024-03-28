@@ -1,14 +1,18 @@
+/* eslint-disable @next/next/no-img-element */
 import { Dialog, Transition } from '@headlessui/react';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 
 export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertObjectHandler }) {
-  const { title, classification, attribution, objectID } = selectedObjectData ?? {};
+  const { title, attribution, dimensions, objectID, inscription, accessionnum, medium, displaydate } = selectedObjectData ?? {};
   const imageSrc = `/scene-assets/${objectID}.png`;
 
   function closeModal() {
     setIsOpen(false);
   }
+
+  const dimensionsText = dimensions ? `This artwork is ${dimensions.replace('overall: ', '')}.` : '';
+  const inscriptionText = inscription ? `There's an inscription on the artwork: "${inscription}".` : '';
 
   return (
     <>
@@ -42,21 +46,23 @@ export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertO
                     {title}
                   </Dialog.Title>
 
-                  <div className="mt-6 border-t border-gray-100">
-                    <dl className="divide-y divide-gray-100">
-                      <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Artist</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {attribution}
-                        </dd>
-                      </div>
-                      <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Part of</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {classification}
-                        </dd>
-                      </div>
-                    </dl>
+                  <div className="py-4 border-t border-gray-100 text-sm grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <p>&quot;{title}&quot; was created by {attribution} in {displaydate} using {medium}.</p>
+                      <p>You can find this artwork in the Index of American Design at the National Gallery of Art.</p>
+                      <p>It&apos;s also known by its accession number, {accessionnum}.</p>
+                      <a
+                        href={`https://www.nga.gov/collection/art-object-page.${objectID}.html`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-500 underline hover:underline"
+                      >
+                        Click here to see the full record on the NGA website
+                      </a>
+                    </div>
+                    <div>
+                      <img src={`/scene-assets/${objectID}.png`} alt={title} className="w-30 h-auto" />
+                    </div>
                   </div>
 
                   <div className="flex align-center justify-between">
