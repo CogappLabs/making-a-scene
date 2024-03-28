@@ -4,15 +4,12 @@ import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 
 export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertObjectHandler }) {
-  const { title, attribution, dimensions, objectID, inscription, accessionnum, medium, displaydate } = selectedObjectData ?? {};
+  const { title, attribution, objectID, primaryImage, accessionnum, medium, displaydate } = selectedObjectData ?? {};
   const imageSrc = `/scene-assets/${objectID}.png`;
 
   function closeModal() {
     setIsOpen(false);
   }
-
-  const dimensionsText = dimensions ? `This artwork is ${dimensions.replace('overall: ', '')}.` : '';
-  const inscriptionText = inscription ? `There's an inscription on the artwork: "${inscription}".` : '';
 
   return (
     <>
@@ -46,26 +43,30 @@ export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertO
                     {title}
                   </Dialog.Title>
 
-                  <div className="py-4 border-t border-gray-100 text-sm grid grid-cols-2 gap-4">
+                  <div className="py-4 mb-4 border-t border-gray-100 text-sm grid sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-2">
                       <p>&quot;{title}&quot; was created by {attribution} in {displaydate} using {medium}.</p>
                       <p>You can find this artwork in the Index of American Design at the National Gallery of Art.</p>
                       <p>It&apos;s also known by its accession number, {accessionnum}.</p>
-                      <a
-                        href={`https://www.nga.gov/collection/art-object-page.${objectID}.html`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-500 underline hover:underline"
-                      >
-                        Click here to see the full record on the NGA website
-                      </a>
                     </div>
                     <div>
-                      <img src={`/scene-assets/${objectID}.png`} alt={title} className="w-30 h-auto" />
+                      <figure className="flex flex-col items-center space-y-4">
+                        <img src={primaryImage} alt={title} className="w-30 h-auto" />
+                        <figcaption >
+                          <a
+                            href={`https://www.nga.gov/collection/art-object-page.${objectID}.html`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-500 underline hover:underline"
+                          >
+                            Click here to see the original record on the NGA website
+                          </a>
+                        </figcaption>
+                      </figure>
                     </div>
                   </div>
 
-                  <div className="flex align-center justify-between">
+                  <div className="flex flex-row flex-wrap justify-between gap-4">
                     <span className="">
                       <button
                         type="button"
