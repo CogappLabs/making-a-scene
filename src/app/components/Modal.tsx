@@ -39,15 +39,28 @@ export default function Modal({ isOpen, setIsOpen, selectedObjectData, onInsertO
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden bg-white rounded-2xl p-6 text-left align-middle drop-shadow-xl transition-all">
-                  <Dialog.Title as="h3" className="text-base font-semibold leading-7 text-gray-900">
+                  <Dialog.Title as="h3" className="text-xl font-semibold">
                     {title}
                   </Dialog.Title>
 
                   <div className="py-4 mb-4 border-t border-gray-100 text-sm grid sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-2">
-                      <p>&quot;{title}&quot; was created by {attribution} in {displaydate} using {medium}.</p>
-                      <p>You can find this artwork in the Index of American Design at the National Gallery of Art.</p>
-                      <p>It&apos;s also known by its accession number, {accessionnum}.</p>
+                      <dl className="space-y-4">
+                        <div>
+                          <dt className="font-semibold">Attribution:</dt>
+                          <dd className="">{attribution}</dd>
+                        </div>
+
+                        <div>
+                          <dt className="font-semibold">Date and Medium:</dt>
+                          <dd className="">{displaydate}, {medium}.</dd>
+                        </div>
+
+                        <div>
+                          <dt className="font-semibold">Location:</dt>
+                          <dd className="">You can find this artwork in the Index of American Design at the National Gallery of Art. It&apos;s accession number is {accessionnum}.</dd>
+                        </div>
+                      </dl>
                     </div>
                     <div>
                       <figure className="flex flex-col items-center space-y-4">
